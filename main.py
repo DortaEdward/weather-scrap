@@ -5,14 +5,14 @@ from selenium.webdriver.chrome.options import Options
 from time import sleep
 from random import randint
 from supabase import create_client, Client
-from decouple import config
 
 class Scraper:
   def __init__(self):
     self.options = Options()
     self.options.headless = True
     self.options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36')
-    self.driver = webdriver.Chrome(options=self.options)
+    self.driver = webdriver.Chrome()
+    # self.driver = webdriver.Chrome(options=self.options)
     self.url = 'https://www.google.com'
     self.states = ['AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA',
               'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME',
@@ -35,6 +35,11 @@ class Scraper:
         "state": self.states[i],
         "weather": self.json[i]
       }
+
+  def printWeather():
+    # Make a table with the weather data and print it out
+    
+    pass
 
   def getWeather(self, state: str):
     state_url = 'https://www.google.com/search?q={}+weather'.format(state)
@@ -62,8 +67,8 @@ class Scraper:
       print('error getting weather for:', state)
 
   def uploadToDB(self):
-    url: str = config('SUPABASE_URL')
-    key: str = config('SUPABASE_KEY')
+    url: str = 'https://jwabetvamhrditzxtffd.supabase.co'
+    key: str = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3YWJldHZhbWhyZGl0enh0ZmZkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY3NzYwOTE5MiwiZXhwIjoxOTkzMTg1MTkyfQ.byTSGL1YqM38KoV27L_zlOa9VgVRDbIipEFQKDNpMww'
     supabase: Client = create_client(url, key)
     print('This is the json getting sent to supa')
     data, count = supabase.table('weather').insert({"weather":self.json}).execute()
